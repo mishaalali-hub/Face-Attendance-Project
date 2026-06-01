@@ -1,0 +1,26 @@
+CREATE DATABASE IF NOT EXISTS face_attendance;
+USE face_attendance;
+
+CREATE TABLE IF NOT EXISTS students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_code VARCHAR(50) UNIQUE NOT NULL,
+  full_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS face_embeddings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT NOT NULL,
+  embedding_json LONGTEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS attendance (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT NOT NULL,
+  date DATE NOT NULL,
+  time_in TIME NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+  UNIQUE KEY uniq_student_day (student_id, date)
+);
